@@ -7,7 +7,9 @@ namespace Proyectos_AGS.Controllers
 {
     [Route("AGS/users")]
     [ApiController]
-    public class UserController :ControllerBase
+
+    public class UserController : ControllerBase
+
     {
         private readonly IUserRepository _UserService;
 
@@ -25,7 +27,8 @@ namespace Proyectos_AGS.Controllers
         [HttpPost("CreateUser")]
         public async Task<UserResultDTO> CreateUser(User user)
         {
-            return await Task.Run(()=> _UserService.CreateUser(user));
+            return await Task.Run(() => _UserService.CreateUser(user));
+
         }
 
         [HttpPost("Login")]
@@ -34,4 +37,3 @@ namespace Proyectos_AGS.Controllers
             return await Task.Run(() => _UserService.Login(user));
         }
     }
-}

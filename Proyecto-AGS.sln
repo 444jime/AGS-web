@@ -6,9 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proyectos-AGS", "Proyectos-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AGS services", "AGS services\AGS services.csproj", "{12807938-8460-4A76-97E4-71A7423BE87A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGS models", "AGS models\AGS models.csproj", "{C19954DC-80A7-4DFF-9514-9D2127305BA8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGS Contollers", "AGS Contollers\AGS Contollers.csproj", "{23514359-3FDF-4AED-B128-DCB3B447F860}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AGS models", "AGS models\AGS models.csproj", "{C19954DC-80A7-4DFF-9514-9D2127305BA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{8070A334-7664-46CC-BF86-45B7467D63A1}"
 	ProjectSection(SolutionItems) = preProject

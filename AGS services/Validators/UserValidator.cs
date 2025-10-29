@@ -20,7 +20,7 @@ namespace AGS_services.Validators
 
             RuleFor(u => u.mail)
                 .EmailAddress().WithMessage("Formato invalido");
-            
+
             RuleFor(u => u.contrasena)
                 .MinimumLength(8).WithMessage("Debe tener al menos 8 caraceres");
             //.Matches("[^a-zA-Z0-9]").WithMessage("Debe tener al menos un caracter especial");
@@ -29,8 +29,8 @@ namespace AGS_services.Validators
             RuleFor(u => u.telefono)
                 .Matches(@"^\d+$").WithMessage("Debe ser numerico")
                 .Length(10).WithMessage("Debe tener 10 digitos");
-            
         }
 
     }
 }
+
