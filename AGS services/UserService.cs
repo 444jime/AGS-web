@@ -123,5 +123,88 @@ namespace AGS_services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public async Task<User> GetUserById(int id)
+        {
+   
+            var user = await _context.Usuarios.FindAsync(id);
+            return user;
+        }
+
+        public async Task<UserResultDTO> UpdateUser(int id, User user)
+        {
+            var user_result = new UserResultDTO();
+            var userFromDb = await _context.Usuarios.FindAsync(id);
+
+            if (userFromDb == null)
+            {
+                user_result.Result = false;
+                user_result.Message = "El usuario no se encontró";
+                return user_result;
+            }
+
+            UserValidator validator = new UserValidator();
+            var validationResult = validator.Validate(user);
+
+            if (!validationResult.IsValid)
+            {
+                user_result.Result = false;
+                user_result.Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return user_result;
+            }
+
+            userFromDb.nombre = user.nombre;
+            userFromDb.apellido = user.apellido;
+            userFromDb.mail = user.mail;
+            userFromDb.telefono = user.telefono;
+            userFromDb.requiere_cambio_contrasena = user.requiere_cambio_contrasena;
+
+            await _context.SaveChangesAsync();
+
+            user_result.Result = true;
+            user_result.Message = "Usuario actualizado correctamente";
+            return user_result; throw new NotImplementedException();
+        }
+
+        public async Task<UserResultDTO> DeleteUser(int id)
+        {
+            var user_result = new UserResultDTO();
+            var userFromDb = await _context.Usuarios.FindAsync(id);
+
+            if (userFromDb == null)
+            {
+                user_result.Result = false;
+                user_result.Message = "No se encontró el usuario a eliminar";
+                return user_result;
+            }
+
+            _context.Usuarios.Remove(userFromDb); 
+            await _context.SaveChangesAsync(); 
+
+            user_result.Result = true;
+            user_result.Message = "Usuario eliminado correctamente";
+            return user_result;
+        }
+
+        public async Task<UserResultDTO> ChangePass(int id, ChangePassDTO passDto)
+        {
+            var user_result = new UserResultDTO();
+            var userFromDb = await _context.Usuarios.FindAsync(id);
+
+            if (userFromDb == null)
+            {
+                user_result.Result = false;
+                user_result.Message = "Usuario no encontrado";
+                return user_result;
+            }
+            userFromDb.contrasena = BCrypt.Net.BCrypt.HashPassword(passDto.NewPassword);
+            userFromDb.requiere_cambio_contrasena = "false";
+
+            await _context.SaveChangesAsync();
+
+            user_result.Result = true;
+            user_result.Message = "Contraseña actualizada correctamente";
+            return user_result;
+        }
     }
 }
