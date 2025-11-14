@@ -1,4 +1,5 @@
-﻿using AGS_Models;
+﻿using AGS_models.DTO;
+using AGS_Models;
 using AGS_Models.DTO;
 using AGS_services.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -51,16 +52,11 @@ namespace Proyectos_AGS.Controllers
             return Ok(user);
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [Authorize] 
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody]UserProfileDTO userDTO)
         {
-            if (id != user.id)
-            {
-                return BadRequest(new { message = "Los id no coinciden" });
-            }
-
-            var result = await _UserService.UpdateUser(id, user);
+            var result = await _UserService.UpdateUser(id, userDTO);
             if (!result.Result)
             {
                 return BadRequest(result);
@@ -85,10 +81,6 @@ namespace Proyectos_AGS.Controllers
         [Authorize] 
         public async Task<IActionResult> ChangePass(int id, [FromBody] ChangePassDTO passDto)
         {
-            if (passDto.NewPassword != passDto.ConfirmNewPassword)
-            {
-                return BadRequest(new { Result = false, Message = "Las contraseñas no coinciden" });
-            }
             var result = await _UserService.ChangePass(id, passDto);
             if (!result.Result)
             {

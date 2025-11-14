@@ -9,7 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt; 
 using System.Security.Claims; 
 using System.Text; 
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+using AGS_models.DTO;
 
 namespace AGS_services
 {
@@ -131,7 +132,7 @@ namespace AGS_services
             return user;
         }
 
-        public async Task<UserResultDTO> UpdateUser(int id, User user)
+        public async Task<UserResultDTO> UpdateUser(int id, UserProfileDTO userDTO)
         {
             var user_result = new UserResultDTO();
             var userFromDb = await _context.Usuarios.FindAsync(id);
@@ -143,8 +144,8 @@ namespace AGS_services
                 return user_result;
             }
 
-            UserValidator validator = new UserValidator();
-            var validationResult = validator.Validate(user);
+            var validator = new UserProfileDTOValidator();
+            var validationResult = validator.Validate(userDTO);
 
             if (!validationResult.IsValid)
             {
@@ -153,17 +154,32 @@ namespace AGS_services
                 return user_result;
             }
 
-            userFromDb.nombre = user.nombre;
-            userFromDb.apellido = user.apellido;
-            userFromDb.mail = user.mail;
-            userFromDb.telefono = user.telefono;
-            userFromDb.requiere_cambio_contrasena = user.requiere_cambio_contrasena;
+            if (!string.IsNullOrEmpty(userDTO.nombre))
+            {
+                userFromDb.nombre = userDTO.nombre;
+            }
+            if (!string.IsNullOrEmpty(userDTO.apellido))
+            {
+                userFromDb.apellido = userDTO.apellido;
+            }
+            if (!string.IsNullOrEmpty(userDTO.mail))
+            {
+                userFromDb.mail = userDTO.mail;
+            }
+            if (!string.IsNullOrEmpty(userDTO.telefono))
+            {
+                userFromDb.telefono = userDTO.telefono;
+            }
+            if (userDTO.requiere_cambio_contrasena != null)
+            {
+                userFromDb.requiere_cambio_contrasena = userDTO.requiere_cambio_contrasena;
+            }
 
             await _context.SaveChangesAsync();
 
             user_result.Result = true;
             user_result.Message = "Usuario actualizado correctamente";
-            return user_result; throw new NotImplementedException();
+            return user_result;
         }
 
         public async Task<UserResultDTO> DeleteUser(int id)
@@ -189,14 +205,25 @@ namespace AGS_services
         public async Task<UserResultDTO> ChangePass(int id, ChangePassDTO passDto)
         {
             var user_result = new UserResultDTO();
-            var userFromDb = await _context.Usuarios.FindAsync(id);
 
+            var validator = new ChangePassDTOValidator();
+            var validationResult = validator.Validate(passDto);
+
+            if (!validationResult.IsValid)
+            {
+                user_result.Result = false;
+                user_result.Message = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return user_result;
+            }
+
+            var userFromDb = await _context.Usuarios.FindAsync(id);
             if (userFromDb == null)
             {
                 user_result.Result = false;
-                user_result.Message = "Usuario no encontrado";
+                user_result.Message = "No se encontro el usuario";
                 return user_result;
             }
+
             userFromDb.contrasena = BCrypt.Net.BCrypt.HashPassword(passDto.NewPassword);
             userFromDb.requiere_cambio_contrasena = "false";
 
