@@ -47,7 +47,10 @@ namespace AGS_services
             {
                 nombre = projectDto.nombre,
                 descripcion = projectDto.descripcion,
-                imagen = imageKey 
+                imagen = imageKey,
+                fecha_inicio = projectDto.fecha_inicio,
+                estado = projectDto.estado,
+                horas = projectDto.horas
             };
 
             return await _projectRepository.AddProject(proyecto);
@@ -72,9 +75,21 @@ namespace AGS_services
             {
                 proyectoFromDb.descripcion = projectDto.descripcion;
             }
-            if (projectDto.imagenFile != null && projectDto.imagenFile.Length > 0)
+            if (projectDto.fecha_inicio != null)
             {
-                proyectoFromDb.imagen = await _fileStorageService.UploadFileAsync(projectDto.imagenFile);
+                proyectoFromDb.fecha_inicio = projectDto.fecha_inicio;
+            }
+            if (projectDto.fecha_fin != null)
+            {
+                proyectoFromDb.fecha_fin = projectDto.fecha_fin;
+            }
+            if (!string.IsNullOrEmpty(projectDto.estado))
+            {
+                proyectoFromDb.estado = projectDto.estado;
+            }
+            if (projectDto.horas != null)
+            {
+                proyectoFromDb.horas = projectDto.horas.Value;
             }
 
             await _projectRepository.UpdateProject(proyectoFromDb);

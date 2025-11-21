@@ -11,6 +11,11 @@ namespace AGS_Models.DTO
         [StringLength(255)]
         public string descripcion { get; set; }
 
+        public DateOnly? fecha_inicio { get; set; }
+        public DateOnly? fecha_fin { get; set; }
+        public string estado { get; set; }
+        public int? horas { get; set; }
+
         public IFormFile? imagenFile { get; set; }
     }
 }
