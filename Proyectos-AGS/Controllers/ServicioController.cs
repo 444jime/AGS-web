@@ -36,7 +36,7 @@ public class ServicioController : ControllerBase
     }
 
     /// <summary>
-    /// Crea un nuevo servicio con imagen.
+    /// Crea un nuevo servicio.
     /// </summary>
     [HttpPost]
     [Authorize]
