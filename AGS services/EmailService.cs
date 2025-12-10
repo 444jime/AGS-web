@@ -1,9 +1,11 @@
 ﻿using AGS_Models.DTO;
 using AGS_services.Repositories;
 using Microsoft.Extensions.Configuration;
-using System.Net;
-using System.Net.Mail;
+using System;
 using System.Threading.Tasks;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace AGS_services
 {
@@ -22,26 +24,20 @@ namespace AGS_services
             {
                 var emailOrigen = _configuration["EmailSettings:EmailOrigen"];
                 var password = _configuration["EmailSettings:Password"];
-                var host = _configuration["EmailSettings:Host"];
-                var port = int.Parse(_configuration["EmailSettings:Port"]);
+                var host = _configuration["EmailSettings:Host"];             
+                var port = int.TryParse(_configuration["EmailSettings:Port"], out int p) ? p : 587;
 
-                var smtpClient = new SmtpClient(host, port)
-                {
-                    EnableSsl = true,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(emailOrigen, password)
-                };
+                var message = new MimeMessage();
 
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(emailOrigen),
-                    Subject = $"Nuevo Contacto Web: {contacto.NombreCompleto} - {contacto.TipoProyecto}",
-                    IsBodyHtml = true,
-                };
+                message.From.Add(new MailboxAddress("Web AGS", emailOrigen));
 
-                mailMessage.To.Add(emailOrigen);
+                message.To.Add(new MailboxAddress("Admin", emailOrigen));
 
-                mailMessage.Body = $@"
+                message.Subject = $"Nuevo Contacto Web: {contacto.NombreCompleto} - {contacto.TipoProyecto}";
+
+                var bodyBuilder = new BodyBuilder();
+
+                bodyBuilder.HtmlBody = $@"
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,15 +95,28 @@ namespace AGS_services
         </div>
     </div>
 </body>
-</html>
-";
+</html>";
 
-                await smtpClient.SendMailAsync(mailMessage);
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (var client = new SmtpClient())
+                {
+                    client.CheckCertificateRevocation = false;
+                 
+                    await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(emailOrigen, password);
+                    
+                    await client.SendAsync(message);
+
+                    await client.DisconnectAsync(true);
+                }
+
                 return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error al enviar el correo: " + e.Message);
+                Console.WriteLine("Error crítico enviando correo: " + e.Message);
                 return false;
             }
         }
