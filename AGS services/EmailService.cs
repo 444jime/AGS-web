@@ -108,7 +108,7 @@ namespace AGS_services
                         client.CheckCertificateRevocation = false;
                         client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                        await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+                        await client.ConnectAsync(host, port, SecureSocketOptions.Auto);
                         Console.WriteLine("[EMAIL] Conexión establecida. Autenticando...");
 
                         await client.AuthenticateAsync(emailOrigen, password);
