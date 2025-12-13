@@ -87,6 +87,11 @@ namespace AGS_services
             {
                 proyectoFromDb.horas = projectDto.horas.Value;
             }
+            if (projectDto.imagenFile != null)
+            {
+                string newImageKey = await _fileStorageService.UploadFileAsync(projectDto.imagenFile);
+                proyectoFromDb.imagen = newImageKey;
+            }
 
             await _projectRepository.UpdateProject(proyectoFromDb);
             user_result.Result = true;
