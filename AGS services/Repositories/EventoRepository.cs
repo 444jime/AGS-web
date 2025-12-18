@@ -10,7 +10,12 @@ namespace AGS_services.Repositories
 
         public async Task<IEnumerable<Evento>> GetAllEventos() => await _context.Eventos.ToListAsync();
         public async Task<Evento> GetByIdEvento(int id) => await _context.Eventos.FindAsync(id);
-
+        public async Task<IEnumerable<Evento>> GetEventosByUsuario(string usuarioId)
+        {
+            return await _context.Eventos
+                .Where(e => e.UsuarioId == usuarioId)
+                .ToListAsync();
+        }
         public async Task<Evento> CreateEvento(Evento evento)
         {
             await _context.Eventos.AddAsync(evento);

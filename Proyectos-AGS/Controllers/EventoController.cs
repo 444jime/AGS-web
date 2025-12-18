@@ -1,7 +1,9 @@
-﻿using AGS_Models.DTO;
+﻿using AGS_Models;
+using AGS_Models.DTO;
 using AGS_services.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Proyectos_AGS.Controllers
 {
@@ -27,13 +29,36 @@ namespace Proyectos_AGS.Controllers
         }
 
         /// <summary>
-        /// Crea un nuevo evento.
+        /// Obtiene la lista de todos los eventos segun usuario.
+        /// </summary>
+        [Authorize]
+        [HttpGet("mis-eventos")]
+        public async Task<ActionResult<IEnumerable<Evento>>> GetMisEventos()
+        {
+            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(usuarioId))
+            {
+                return Unauthorized("Usuario no identificado.");
+            }
+
+            Console.WriteLine($"DEBUG: El usuario del token es: {usuarioId}");
+
+            var eventos = await _service.GetEventosByUsuario(usuarioId);
+            return Ok(eventos);
+        }
+
+        /// <summary>
+        /// Crea un nuevo evento segun usuario.
         /// </summary>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateEvento([FromBody] EventoCreateDTO dto)
         {
-            var nuevo = await _service.CreateEvento(dto);
+            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (usuarioId == null) return Unauthorized();
+            var nuevo = await _service.CreateEvento(dto, usuarioId);
             return Ok(nuevo);
         }
 

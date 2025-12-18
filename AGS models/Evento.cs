@@ -17,5 +17,8 @@ namespace AGS_Models
 
         [Required]
         public DateOnly fecha { get; set; }
+
+        [Required]
+        public string UsuarioId { get; set; }
     }
 }

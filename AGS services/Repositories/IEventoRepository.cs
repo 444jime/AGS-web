@@ -5,6 +5,7 @@ namespace AGS_services.Repositories
     public interface IEventoRepository
     {
         Task<IEnumerable<Evento>> GetAllEventos();
+        Task<IEnumerable<Evento>> GetEventosByUsuario(string usuarioId);
         Task<Evento> GetByIdEvento(int id);
         Task<Evento> CreateEvento(Evento evento);
         Task UpdateEvento(Evento evento);
