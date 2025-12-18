@@ -9,6 +9,7 @@ namespace AGS_services.Repositories
     {
         Task<Proyecto> GetByIdProject(int id);
         Task<IEnumerable<Proyecto>> GetProjects();
+        Task<IEnumerable<Proyecto>> GetPublicProjects();
         Task<Proyecto> CreateProject(ProjectCreateDTO proyectoDto);
         Task<UserResultDTO> UpdateProject(int id, ProjectUpdateDTO projectDto);
         Task<UserResultDTO> UpdateProjectHours(int id, int newHours);

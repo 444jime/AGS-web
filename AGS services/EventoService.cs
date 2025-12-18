@@ -23,13 +23,19 @@ namespace AGS_services
             return await _repo.GetByIdEvento(id);
         }
 
-        public async Task<Evento> CreateEvento(EventoCreateDTO dto)
+        public async Task<IEnumerable<Evento>> GetEventosByUsuario(string usuarioId)
+        {
+            return await _repo.GetEventosByUsuario(usuarioId);
+        }
+
+        public async Task<Evento> CreateEvento(EventoCreateDTO dto, string usuarioId)
         {
             var evento = new Evento
             {
                 nombre = dto.nombre,
                 horas = dto.horas,
-                fecha = dto.fecha
+                fecha = dto.fecha,
+                UsuarioId = usuarioId
             };
             return await _repo.CreateEvento(evento);
         }

@@ -25,6 +25,12 @@ namespace AGS_services
         {
             return await _context.Proyectos.ToListAsync();
         }
+        public async Task<IEnumerable<Proyecto>> GetPublicProjects()
+        {
+            return await _context.Proyectos
+                                 .Where(p => p.es_publico == true)
+                                 .ToListAsync();
+        }
 
         public async Task<Proyecto> AddProject(Proyecto proyecto)
         {
