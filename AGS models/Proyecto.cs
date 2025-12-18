@@ -19,6 +19,9 @@ namespace AGS_Models
         public string estado { get; set; }
         public int horas { get; set; }
 
+        [Column("es_publico")]
+        public bool es_publico { get; set; }
+
         [NotMapped] 
         public string Url { get; set; }
     }

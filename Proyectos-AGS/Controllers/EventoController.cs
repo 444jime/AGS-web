@@ -42,8 +42,6 @@ namespace Proyectos_AGS.Controllers
                 return Unauthorized("Usuario no identificado.");
             }
 
-            Console.WriteLine($"DEBUG: El usuario del token es: {usuarioId}");
-
             var eventos = await _service.GetEventosByUsuario(usuarioId);
             return Ok(eventos);
         }

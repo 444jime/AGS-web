@@ -8,6 +8,7 @@ namespace AGS_services.Repositories
     {
         Task<Proyecto> GetByIdProject(int id);
         Task<IEnumerable<Proyecto>> GetProjects();
+        Task<IEnumerable<Proyecto>> GetPublicProjects();
         Task<Proyecto> AddProject(Proyecto proyecto);
         Task UpdateProject(Proyecto proyecto);
         Task DeleteProject(int id);

@@ -44,6 +44,20 @@ public class ProjectController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene solo los proyectos marcados como públicos.
+    /// </summary>
+    /// <remarks>
+    /// Este endpoint es accesible sin token para mostrar en la web externa.
+    /// </remarks>
+    [HttpGet("publicos")]
+    [AllowAnonymous] // Permite acceso sin necesidad de [Authorize]
+    public async Task<IActionResult> GetPublicProjects()
+    {
+        var proyectos = await _projectService.GetPublicProjects();
+        return Ok(proyectos);
+    }
+
+    /// <summary>
     /// Crea un nuevo proyecto con imagen.
     /// </summary>
     [HttpPost]

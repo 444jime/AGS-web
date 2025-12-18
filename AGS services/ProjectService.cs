@@ -39,6 +39,18 @@ namespace AGS_services
             return proyecto;
         }
 
+        public async Task<IEnumerable<Proyecto>> GetPublicProjects()
+        {
+            var proyectos = await _projectRepository.GetPublicProjects();
+
+            foreach (var proyecto in proyectos)
+            {
+                proyecto.Url = _fileStorageService.GetFileUrl(proyecto.imagen);
+            }
+
+            return proyectos;
+        }
+
         public async Task<Proyecto> CreateProject(ProjectCreateDTO projectDto)
         {
             string imageKey = await _fileStorageService.UploadFileAsync(projectDto.imagenFile);
@@ -86,6 +98,14 @@ namespace AGS_services
             if (projectDto.horas != null)
             {
                 proyectoFromDb.horas = projectDto.horas.Value;
+            }
+
+            proyectoFromDb.es_publico = projectDto.es_publico;
+
+            if (projectDto.imagenFile != null)
+            {
+                string newImageKey = await _fileStorageService.UploadFileAsync(projectDto.imagenFile);
+                proyectoFromDb.imagen = newImageKey;
             }
 
             await _projectRepository.UpdateProject(proyectoFromDb);

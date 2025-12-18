@@ -14,6 +14,7 @@ namespace AGS_Models.DTO
         public DateOnly? fecha_inicio { get; set; }
         public string estado { get; set; }
         public int? horas { get; set; }
+        public bool es_publico { get; set; }
 
         public IFormFile? imagenFile { get; set; }
     }

@@ -24,5 +24,8 @@ namespace AGS_Models.DTO
 
         [Required]
         public IFormFile imagenFile { get; set; }
+
+        [Required]
+        public bool es_publico { get; set; }
     }
 }
